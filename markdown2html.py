@@ -1,81 +1,64 @@
-#!/usr/bin/env python3
-import sys
-import os
+#!/usr/bin/python3
+"""
+This is a script to convert a Markdown file to HTML.
+
+Usage:
+    ./markdown2html.py [input_file] [output_file]
+
+Arguments:
+    input_file: the name of the Markdown file to be converted
+    output_file: the name of the output HTML file
+
+Example:
+    ./markdown2html.py README.md README.html
+"""
+
+import argparse
+import pathlib
 import re
-import hashlib
 
-# Check if the number of arguments is correct
-if len(sys.argv) < 3:
-    sys.stderr.write("Usage: ./markdown2html.py <input_file.md> <output_file.html>\n")
-    sys.exit(1)
 
-# Assign arguments to variables
-input_file = sys.argv[1]
-output_file = sys.argv[2]
+def convert_md_to_html(input_file, output_file):
+    '''
+    Converts markdown file to HTML file
+    '''
+    # Read the contents of the input file
+    with open(input_file, encoding='utf-8') as f:
+        md_content = f.readlines()
 
-# Check if the input file exists
-if not os.path.exists(input_file):
-    sys.stderr.write(f"Missing {input_file}\n")
-    sys.exit(1)
+    html_content = []
+    for line in md_content:
+        # Check if the line is a heading
+        match = re.match(r'(#){1,6} (.*)', line)
+        if match:
+            # Get the level of the heading
+            h_level = len(match.group(1))
+            # Get the content of the heading
+            h_content = match.group(2)
+            # Append the HTML equivalent of the heading
+            html_content.append(f'<h{h_level}>{h_content}</h{h_level}>\n')
+        else:
+            html_content.append(line)
 
-# Function to convert content within [[ ]] to its MD5 hash
-def convert_to_md5(text):
-    return hashlib.md5(text.encode()).hexdigest()
+    # Write the HTML content to the output file
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.writelines(html_content)
 
-# Function to remove 'c' or 'C' from text
-def remove_c(text):
-    return re.sub(r'[cC]', '', text)
 
-# Function to replace inline styles (bold, emphasis, MD5, and removal of 'c')
-def parse_inline_styles(line):
-    # Bold syntax
-    line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)  # **text** -> <b>text</b>
-    line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)    # __text__ -> <em>text</em>
-    
-    # MD5 hash conversion
-    line = re.sub(r'\[\[(.*?)\]\]', lambda m: convert_to_md5(m.group(1)), line)  # [[text]] -> MD5 hash
-    
-    # Remove 'c' (case insensitive)
-    line = re.sub(r'\(\((.*?)\)\)', lambda m: remove_c(m.group(1)), line)  # ((text)) -> remove 'c'
-    
-    return line
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Convert markdown to HTML')
+    parser.add_argument('input_file', help='path to input markdown file')
+    parser.add_argument('output_file', help='path to output HTML file')
+    args = parser.parse_args()
 
-# Function to convert markdown to HTML
-def markdown_to_html_line(line):
-    # Apply inline styles first (bold, emphasis, MD5, remove 'c')
-    line = parse_inline_styles(line)
+    # Check if the input file exists
+    input_path = pathlib.Path(args.input_file)
+    if not input_path.is_file():
+        print(f'Missing {input_path}', file=sys.stderr)
+        sys.exit(1)
 
-    # Handle heading conversion
-    heading_match = re.match(r'^(#{1,6})\s+(.*)', line)
-    if heading_match:
-        heading_level = len(heading_match.group(1))  # Number of # symbols
-        heading_text = heading_match.group(2)        # The text after the # symbols
-        return f"<h{heading_level}>{heading_text}</h{heading_level}>"
-
-    # Handle unordered list items (- item)
-    unordered_list_match = re.match(r'^-\s+(.*)', line)
-    if unordered_list_match:
-        list_item_text = unordered_list_match.group(1)
-        return f"<li>{list_item_text}</li>"
-
-    # Handle paragraphs (for non-empty lines not in lists)
-    if line:
-        return f"<p>{line}</p>"
-
-    return line
-
-# Process the Markdown file and write the HTML output
-try:
-    with open(input_file, 'r') as infile:
-        with open(output_file, 'w') as outfile:
-            for line in infile:
-                line = line.strip()  # Remove leading/trailing whitespace
-                html_line = markdown_to_html_line(line)
-                outfile.write(html_line + "\n")
-
-    sys.exit(0)  # Success
-except Exception as e:
-    sys.stderr.write(f"An error occurred: {str(e)}\n")
-    sys.exit(1)
+    # Convert the markdown file to HTML
+    convert_md_to_html(args.input_file, args.output_file)
 
 
