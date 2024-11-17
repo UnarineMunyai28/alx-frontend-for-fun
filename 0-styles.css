@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+    font-size: 18px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px; /* Assuming sprite icons are 24x24px */
+    height: 24px;
+    background: url('0-sprite.png') no-repeat;
+}
+
+.i-html {
+    background-position: 0 0; /* Adjust this based on sprite's position for HTML */
+}
+
+.i-css {
+    background-position: -24px 0; /* Adjust for CSS */
+}
+
+.i-js {
+    background-position: -48px 0; /* Adjust for JavaScript */
+}
+

@@ -1,0 +1,28 @@
+h2 {
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #3498db;
+    position: relative;
+}
+
+a::after {
+    content: "";
+    display: block;
+    height: 2px;
+    background-color: #3498db;
+    width: 0;
+    transition: width 0.4s ease;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+}
+
+a:hover::after {
+    width: 100%;
+}
+

@@ -1,0 +1,101 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: #333;
+}
+
+.menu {
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+
+.menu-open {
+    display: none;
+}
+
+.menu-open-button {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.3s;
+}
+
+.menu-line {
+    width: 30px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    transition: transform 0.3s;
+}
+
+.menu-item {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+    transform: scale(0);
+    transition: transform 0.3s;
+}
+
+.menu-open:checked ~ .menu-item {
+    transform: scale(1);
+}
+
+.menu-open:checked ~ .menu-open-button {
+    transform: rotate(45deg);
+}
+
+.menu-open:checked ~ .menu-open-button .menu-line-1 {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-open:checked ~ .menu-open-button .menu-line-2 {
+    opacity: 0;
+}
+
+.menu-open:checked ~ .menu-open-button .menu-line-3 {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.menu-item:nth-child(2) {
+    top: -90px;
+    left: 10px;
+}
+
+.menu-item:nth-child(3) {
+    top: -50px;
+    right: -50px;
+}
+
+.menu-item:nth-child(4) {
+    top: 10px;
+    right: -90px;
+}
+
+.menu-item:nth-child(5) {
+    bottom: -50px;
+    right: -50px;
+}
+
+.menu-item:nth-child(6) {
+    bottom: -90px;
+    left: 10px;
+}
+
